@@ -4,59 +4,29 @@
         <div class="content">
             <div class="search-result">
                 <p class="item-title">
-                    今日
+                    浏览历史
                 </p>
                 <div class="search-result-inside">
                     <div v-for="item in items" class="item">
                         <div class="left">
                             <img :src="item.pics" alt="" width="200px" height="auto" class="img">
                             <span class="item-title">
-              {{ item.title }}
-            </span>
+                              <el-button type="primary" round icon="el-icon-star-off" size="mini" class="cancel-button" @click="toDetail(item.comicId)" >查看详情</el-button>
+                            </span>
                         </div>
 
                     </div>
                 </div>
-                <br>
-                <br>
-                <p class="item-title">
-                    昨日
-                </p>
-                <div class="search-result-inside">
-                    <div v-for="item in items" class="item">
-                        <div class="left">
-                            <img :src="item.pics" alt="" width="200px" height="auto">
-                            <span class="item-title">
-              {{ item.title }}
-            </span>
-                        </div>
-
-                    </div>
+                <div class="block">
+                    <el-pagination
+                            layout="prev, pager, next"
+                            :current-page.sync="currentPage"
+                            :page-count="total"
+                            @current-change="add">
+                    </el-pagination>
                 </div>
-                <br>
-                <br>
-                <p class="item-title">
-                    早些时候
-                </p>
-                <div class="search-result-inside">
-                    <div v-for="item in items" class="item">
-                        <div class="left">
-                            <img :src="item.pics" alt="" width="200px" height="auto">
-                            <span class="item-title">
-              {{ item.title }}
-            </span>
-                        </div>
-
-                    </div>
-                </div>
-
             </div>
-            <div class="right">
-                <p class="item-title">
-                    搜索历史
-                </p>
 
-            </div>
         </div>
     </div>
 </template>
@@ -71,7 +41,7 @@
                 total:0,
                 keyword: '',
                 currentPage:1,
-                pageSize:20,
+                pageSize:10,
                 items:null
             }
         },
@@ -91,6 +61,7 @@
                     }
                 }).then(comics_response =>{
                     this.items=comics_response.data.data.content
+                    this.total=comics_response.data.data.totalPages
                 })
             },
             search:function() {
@@ -98,6 +69,7 @@
                 params.append('keyword', this.keyword)
                 params.append('pageSize', this.pageSize)
                 params.append('currentPage', this.currentPage)
+                console.log(comics_response.data.data.totalPages)
                 this.$axios.get('/searchComic',{
                     params: {
                         keyword: this.keyword,
@@ -110,10 +82,10 @@
                     console.log(comics_response.data.data.totalPages)
                 })
             },
-            toDetail:function(item) {
+            toDetail:function(comicId) {
                 console.log('toDe')
-                console.log(item)
-                this.$router.push({name: 'comicDetail', params: {data: item}})
+                console.log(comicId)
+                this.$router.push({name: 'comicDetail', params: {id: comicId}})
             }
         }
     }
@@ -123,12 +95,13 @@
     .chapter{
         margin: 10px;
     }
-    .item{
-        display: flex;
-        justify-content: center;
-    }
+    /*.item{*/
+    /*    display: flex;*/
+    /*    justify-content: center;*/
+    /*}*/
     .left{
         width: 220px;
+        text-align: center;
     }
     .right{
         width:1000px;
@@ -202,6 +175,8 @@
     }
     .left{
         width: 220px;
+        margin-top: 20px;
+        margin-bottom: 20px;
     }
     .item-line span {
         margin-right: 25px;
@@ -222,11 +197,15 @@
         display: inline-block;
     }
     .search-result{
+        width: 100%;
         margin: 20px 30px 30px 30px;
     }
     .search-result-inside{
+        width: 100%;
         display: flex;
-        align-content:space-around;
+        justify-content: inline-block;
+        flex-direction: row;
+        flex-wrap: wrap;
     }
     .icon-pic{
         margin-top: 15px;
@@ -248,5 +227,8 @@
     }
     .input-with-select .el-input-group__prepend {
         background-color: #FF7E2E;
+    }
+    .block{
+        text-align: center;
     }
 </style>

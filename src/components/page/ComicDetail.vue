@@ -37,8 +37,11 @@
                         <p class="item-line-content">
                             {{ item.desc }}
                         </p>
-                        <p>
+                        <p v-if="isCollected==='no'">
                             <el-button type="primary" round icon="el-icon-message-solid" size="medium" class="cancel-button" @click="addCollect(item)">订阅</el-button>
+                        </p>
+                        <p v-else>
+                            <el-tag type="success">已订阅</el-tag>
                         </p>
                     </div>
 
@@ -62,6 +65,7 @@
         name: 'search',
         data() {
             return {
+                id:'',
                 item:{
                     id:'',
                     title:'君临臣下',
@@ -75,7 +79,8 @@
                 chapter:null,
                 currentPage:1,
                 pageSize:10,
-                total:0
+                total:0,
+                isCollected:'no',
 
 
             }
@@ -84,22 +89,31 @@
         watch: {
             // 方法1
             '$route' (to, from) { //监听路由是否变化
-                if(this.$route.params.data){// 判断条件1  判断传递值的变化
-                    this.item=this.$route.params.data
+                if(this.$route.params.id){// 判断条件1  判断传递值的变化
+                    this.id=this.$route.params.id
+                    this.getComicByComicId()
+                    this.isCollectedByUser()
                     this.search()
                 }
             }
         },
         created(){
-            this.item=this.$route.params.data
+            this.id=this.$route.params.id
             console.log('11111')
-            console.log(this.$route.params.data)
+            console.log(this.$route.params.id)
+            this.getComicByComicId()
+            this.isCollectedByUser()
             this.search()
-            // this.search()
         },
         methods:{
-            init:function(keyword){
-                this.item=this.$route.params.data
+            getComicByComicId:function(){
+                this.$axios.get('/getComicByComicId',{
+                    params: {
+                        comicId: this.id,
+                    }
+                }).then(chapter_response =>{
+                   this.item=chapter_response.data.data.data
+                })
             },
             add:function(chap) {
                 let params = new FormData()
@@ -109,7 +123,7 @@
                 params.append('chapterId',chap.id)
                 params.append('chapter',chap.chapter)
                 params.append('url',chap.url)
-                this.$axios.post('/recordRead',params)
+                this.$axios.post('/recordRead',params).then()
             },
             addCollect:function(item) {
                 let params = new FormData()
@@ -118,16 +132,26 @@
                 params.append('title',item.title)
                 params.append('url',item.url)
                 params.append('pics',item.pics)
-                this.$axios.post('/addCollect',params)
+                this.$axios.post('/addCollect',params).then(comic_response =>{
+                    if (comic_response.data.code===200){
+                        this.$message.success('订阅成功');
+                        this.isCollected='yes'
+                    }
+                })
             },
-            search:function() {
+            isCollectedByUser:function(){
                 let params = new FormData()
-                params.append('keyword', this.keyword)
-                params.append('pageSize', this.pageSize)
-                params.append('currentPage', this.currentPage)
+                params.append('userId', localStorage.getItem('id'))
+                params.append('comicId', this.id)
+                this.$axios.post('/isComicCollectedByUser',params).then(comic_response =>{
+                    this.isCollected=comic_response.data.data
+                })
+            },
+
+            search:function() {
                 this.$axios.get('/getAllChapterByComicId',{
                     params: {
-                        comicId: this.item.id,
+                        comicId: this.id,
                         currentPage: this.currentPage,
                         pageSize: this.pageSize
                     }
@@ -159,6 +183,7 @@
         margin-right: 100px;
         display: flex;
         justify-content: center;
+        margin-bottom: 30px;
     }
     .chapter{
         margin-left: 100px;
@@ -167,6 +192,7 @@
     .left{
         width: 220px;
         margin-top: -40px;
+        margin-right: 30px;
     }
     .right{
         width:1000px;

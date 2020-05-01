@@ -29,7 +29,9 @@ const i18n = new VueI18n({
     locale: 'zh',
     messages
 });
-
+Vue.prototype.$message1 = function (msg) {
+    this.$message({message: msg,duration:500})
+}
 //使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {
     document.title = `${to.meta.title} | vue-manage-system`;

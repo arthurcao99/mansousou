@@ -51,8 +51,8 @@
                             <p class="item-line-content">
                                 {{ item.desc }}
                             </p>
-                            <p>
-                                <el-button type="primary" round icon="el-icon-delete" size="medium" class="cancel-button" @click="toDetail(item);add(item)" >查看详情</el-button>
+                            <p class="button">
+                                <el-button type="primary" round icon="el-icon-star-off" size="medium" class="cancel-button" @click="toDetail(item.id);add(item)" >查看详情</el-button>
                             </p>
                         </div>
 
@@ -60,7 +60,13 @@
                 </div>
             </div>
     <div class="page">
-<!--      <pagination v-show="total>0" :total="total" :page.sync="currentPage" :limit.sync="pageSize" @pagination="getList" />-->
+        <el-pagination
+                background
+                layout="prev, pager, next"
+                :page-count="total"
+                :current-page.sync="currentPage"
+                @current-change="search">
+        </el-pagination>
     </div>
   </div>
 </template>
@@ -128,10 +134,10 @@
           console.log(comics_response.data.data.totalPages)
         })
       },
-        toDetail:function(item) {
+        toDetail:function(comicId) {
           console.log('toDe')
-          console.log(item)
-            this.$router.push({name: 'comicDetail', params: {data: item}})
+          console.log(comicId)
+            this.$router.push({name: 'comicDetail', params: {id: comicId}})
         }
     }
   }
@@ -144,9 +150,11 @@
     .item{
         display: flex;
         justify-content: center;
+        margin-bottom: 30px;
     }
     .left{
         width: 220px;
+        margin-right: 50px;
     }
     .right{
         width:1000px;
@@ -157,6 +165,10 @@
         letter-spacing: 0px;
         margin-top: 8px;
         line-height: 18px;
+    }
+    .search-input{
+        display: flex;
+        justify-content: space-between;
     }
     .item-line span {
         margin-right: 25px;
@@ -185,6 +197,8 @@
     }
     .search-result{
         margin: 20px 30px 30px 30px;
+        padding-left: 150px;
+        padding-right: 150px;
     }
     /*.icon-pic{*/
     /*    margin-top: 15px;*/
@@ -201,4 +215,13 @@
     .icon{
         text-align: center;
     }
+    .dashboard-container{
+        padding-left: 100px;
+        padding-right: 100px;
+    }
+    .page{
+        text-align: center;
+    }
+
+
 </style>
