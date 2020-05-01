@@ -49,7 +49,7 @@
             </div>
             <div class="chapter">
 
-                <el-button type="primary" plain  round v-for="chap in chapter" class="chapter-item" @click="add(chap)"><a :href="chap.url" target="_blank">第{{chap.no}}章 &nbsp;{{chap.chapter}}</a></el-button>
+                <el-button type="primary" plain  round v-for="chap in chapter" class="chapter-item" @click="add(chap)"><a :href="chap.url" target="_blank">第{{chap.no}}章</a></el-button>
             </div>
             <div class="block">
                 <el-pagination
@@ -84,7 +84,7 @@
                 },
                 chapter:null,
                 currentPage:1,
-                pageSize:10,
+                pageSize:50,
                 total:0,
                 isCollected:'no',
 
@@ -173,6 +173,21 @@
 </script>
 
 <style lang="scss" scoped>
+    a:link {
+
+        color: black;
+        text-decoration: none;
+    }
+    a:visited {
+
+        color: black;
+        text-decoration: none;
+    }
+    a:hover {
+
+        color: black;
+        text-decoration: underline;
+    }
     .all{
         margin-top: 80px;
         margin-right: 100px;

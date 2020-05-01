@@ -30,54 +30,12 @@
         name: 'Dashboard',
         data() {
             return {
-                pageSize: 5,
+                pageSize: 10,
                 currentPage:1,
                 id:'',
                 input3: '',
-                items: [
-                    {
-                        title: '拳愿奥米伽',
-                        url: ''
-                    },
-                    {
-                        title: '被勇者队伍开除的驭兽使、邂逅了最强种的猫耳少女',
-                        url: ''
-                    },
-                    {
-                        title: '八男？别闹了！',
-                        url: ''
-                    },
-                    {
-                        title: 'BE BLUES!~化身为青',
-                        url: ''
-                    },
-                    {
-                        title: '山海逆战',
-                        url: ''
-                    }
-                ],
-                historys: [
-                    {
-                        title: '拳愿奥米伽',
-                        url: ''
-                    },
-                    {
-                        title: '被勇者队伍开除的驭兽使、邂逅了最强种的猫耳少女',
-                        url: ''
-                    },
-                    {
-                        title: '八男？别闹了！',
-                        url: ''
-                    },
-                    {
-                        title: 'BE BLUES!~化身为青',
-                        url: ''
-                    },
-                    {
-                        title: '山海逆战',
-                        url: ''
-                    }
-                ]
+                items: null,
+                historys: null
             }
         },
         created(){

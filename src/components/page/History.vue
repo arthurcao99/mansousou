@@ -12,6 +12,7 @@
                             <img :src="item.pics" alt="" width="200px" height="auto" class="img">
                             <span class="item-title">
                               <el-button type="primary" round icon="el-icon-star-off" size="mini" class="cancel-button" @click="toDetail(item.comicId)" >查看详情</el-button>
+                                <el-button type="primary" round icon="el-icon-refresh-right" size="mini" class="cancel-button" ><a :href="item.url" target="_blank">上次浏览</a></el-button>
                             </span>
                         </div>
 
@@ -92,6 +93,22 @@
 </script>
 
 <style lang="scss" scoped>
+    a:link {
+
+        color: white;
+        text-decoration: none;
+    }
+    a:visited {
+
+        color: white;
+        text-decoration: none;
+    }
+    a:hover {
+
+        color: white;
+        text-decoration: underline;
+    }
+
     .chapter{
         margin: 10px;
     }
