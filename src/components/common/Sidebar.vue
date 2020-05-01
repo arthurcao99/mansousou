@@ -63,12 +63,12 @@ export default {
                 },
                 {
                     icon: 'el-icon-lx-global',
-                    index: 'i18n',
+                    index: 'collect',
                     title: '我的收藏'
                 },
                 {
                     icon: 'el-icon-lx-copy',
-                    index: '/donate',
+                    index: '/history',
                     title: '浏览历史'
                 }
             ]

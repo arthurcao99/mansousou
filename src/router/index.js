@@ -88,9 +88,9 @@ export default new Router({
                 },
                 {
                     // 国际化组件
-                    path: '/i18n',
-                    component: () => import(/* webpackChunkName: "i18n" */ '../components/page/I18n.vue'),
-                    meta: { title: '国际化' }
+                    path: '/collect',
+                    component: () => import(/* webpackChunkName: "i18n" */ '../components/page/collect.vue'),
+                    meta: { title: '我的收藏' }
                 },
                 {
                     // 权限页面
@@ -109,9 +109,9 @@ export default new Router({
                     meta: { title: '403' }
                 },
                 {
-                    path: '/donate',
-                    component: () => import(/* webpackChunkName: "donate" */ '../components/page/Donate.vue'),
-                    meta: { title: '支持作者' }
+                    path: '/history',
+                    component: () => import(/* webpackChunkName: "donate" */ '../components/page/History.vue'),
+                    meta: { title: '浏览历史' }
                 }
             ]
         },

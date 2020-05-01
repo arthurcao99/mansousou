@@ -51,10 +51,16 @@
 
                 <el-button type="primary" plain  round v-for="chap in chapter" class="chapter-item" @click="add(chap)"><a :href="chap.url" target="_blank">第{{chap.no}}章 &nbsp;{{chap.chapter}}</a></el-button>
             </div>
+            <div class="block">
+                <el-pagination
+                        layout="prev, pager, next"
+                        :current-page.sync="currentPage"
+                        :page-count="total"
+                        @current-change="search">
+                </el-pagination>
+            </div>
         </div>
-        <div class="page">
-            <!--      <pagination v-show="total>0" :total="total" :page.sync="currentPage" :limit.sync="pageSize" @pagination="getList" />-->
-        </div>
+
     </div>
 </template>
 
@@ -233,5 +239,8 @@
         margin: 20px 30px 30px 30px;
         background-color:white;
         border-radius: 10px;
+    }
+    .block{
+        text-align: center;
     }
 </style>

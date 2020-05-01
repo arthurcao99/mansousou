@@ -15,6 +15,12 @@
 
       </div>
     </div>
+      <div class="block1">
+          <div class="search-desc"><span>
+          为您找到相关结果{{result}}条，搜索用时{{time}}ms
+      </span></div>
+      </div>
+
             <div class="search-result">
                 <div v-for="item in items" class="item">
                     <div class="left">
@@ -78,6 +84,8 @@
     name: 'search',
     data() {
       return {
+          result:0,
+          time:0,
         total:0,
         keyword: '',
         currentPage:1,
@@ -131,6 +139,8 @@
         }).then(comics_response =>{
           this.items=comics_response.data.data.content
           this.total=comics_response.data.data.totalPages
+            this.result=comics_response.data.data.totalElements
+            this.time=comics_response.data.data.searchTime
           console.log(comics_response.data.data.totalPages)
         })
       },
@@ -222,6 +232,18 @@
     .page{
         text-align: center;
     }
-
+    .search-desc{
+        margin-top: 30px;
+        margin-bottom: 20px;
+        width: 400px;
+        background-color: white;
+        border-radius: 10px;
+        height: 25px;
+    }
+    .block1{
+        display: flex;
+        justify-content: center;
+        text-align: center;
+    }
 
 </style>
