@@ -19,7 +19,7 @@
         <div class="hot">
             <div>
                 <img src="../../styles/日历.png" height="20" width="15" class="hot-icon">历史
-                <el-button v-for="item in historys" round class="hot-item" @click="toHotSearch(item);addRecord(item.keyword)">{{ item.keyword }}</el-button>
+                <el-button v-for="item in historys" round class="hot-item" @click="toHotSearch(item)">{{ item.keyword }}</el-button>
                 <el-button type="danger" icon="el-icon-delete" circle @click="deleteSerachHistory()"></el-button>
             </div>
         </div>
@@ -58,7 +58,7 @@
             },
             addRecord:function(keyword) {
                 let params = new FormData()
-                
+
                 params.append('userId', localStorage.getItem('id'))
                 params.append('keyword', keyword )
                 this.$axios.post('/addSearch',params).then(successResponse=>{
