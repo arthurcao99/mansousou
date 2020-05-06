@@ -21,9 +21,29 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm()">登录</el-button>
                 </div>
-                <p class="login-tips">Tips : 用户名和密码随便填。</p>
+                <div class="login-btn">
+                    <el-button type="primary" @click="handleReg()">注册</el-button>
+                </div>
             </el-form>
         </div>
+
+        <el-dialog title="注册用户" :visible.sync="regVisible" width="30%">
+            <el-form ref="reg" :model="reg" :rules="rules" label-width="70px">
+                <el-form-item prop="username" label="用户名">
+                    <el-input v-model="reg.username"  ></el-input>
+                </el-form-item>
+                <el-form-item prop="password1" label="密码" >
+                    <el-input v-model="reg.password1" type="password"></el-input>
+                </el-form-item>
+                <el-form-item prop="password2" label="密码" >
+                    <el-input v-model="reg.password2" type="password"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+		        <el-button @click="regVisible = false">取 消</el-button>
+		        <el-button type="primary" @click="submitReg()">确 定</el-button>
+		    </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -31,6 +51,12 @@
 export default {
     data: function() {
         return {
+            regVisible:false,
+            reg:{
+                username: '',
+                password1:'',
+                password2:''
+            },
             param: {
                 username: 'admin',
                 password: '111111',
@@ -42,6 +68,33 @@ export default {
         };
     },
     methods: {
+        handleReg(){
+            this.regVisible = true;
+        },
+        submitReg(){
+            this.$refs.reg.validate(vaild=>{
+                if(vaild){
+                    let params = new FormData()
+                    params.append('username', this.reg.username)
+                    params.append('password1', this.reg.password1)
+                    params.append('password2', this.reg.password2)
+                    this.$axios.post('/reg',params).then(successResponse =>{
+                        if (successResponse.data.code===200){
+                            this.regVisible = false;
+                            this.$message.success(successResponse.data.data);
+
+                        }
+                        else{
+                            this.$message.error(successResponse.data.data)
+                        }
+                    })
+                }else{
+                    return false;
+                }
+
+
+            });
+        },
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {

@@ -25,6 +25,11 @@ export default new Router({
                     meta: { title: '搜索' }
                 },
                 {
+                    path: '/advanceSearch',
+                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/AdvanceSearch.vue'),
+                    meta: { title: '高级搜索' }
+                },
+                {
                     name: 'comicDetail',
                     path: '/comicDetail',
                     component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/ComicDetail.vue'),

@@ -7,7 +7,9 @@
         <div style="margin-top: 15px;" class="search-input">
             <el-input v-model="input3" placeholder="请输入内容" class="input-with-select" required/>
                 <el-button type="primary" icon="el-icon-search" @click="toSearch();addRecord(input3)">搜索</el-button>
+            <el-button type="primary" icon="el-icon-search" @click="toAdvanceSearch()">高级搜索</el-button>
         </div>
+
         <div class="hot">
             <div>
                 <img src="../../styles/热门.png" height="20" width="15" class="hot-icon">热门
@@ -45,8 +47,8 @@
             this.getUserSerach()
         },
         methods:{
-            toSearch: function(){
-                this.$router.push({path: 'search', query: {keyword: this.input3}})
+            toAdvanceSearch: function(){
+                this.$router.push({path: 'advanceSearch'})
             },
             toHotSearch: function(item){
                 this.$router.push({path: 'search', query: {keyword: item.keyword}})
@@ -56,6 +58,7 @@
             },
             addRecord:function(keyword) {
                 let params = new FormData()
+                
                 params.append('userId', localStorage.getItem('id'))
                 params.append('keyword', keyword )
                 this.$axios.post('/addSearch',params).then(successResponse=>{
