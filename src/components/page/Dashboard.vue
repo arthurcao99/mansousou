@@ -12,8 +12,24 @@
 <!--                    placeholder="请输入内容"-->
 <!--                    @select="handleSelect"-->
 <!--            ></el-autocomplete>-->
-
-            <el-autocomplete  v-model="input3" placeholder="请输入内容" class="input-with-select" required @select="handleSelect" :fetch-suggestions="querySearchAsync"></el-autocomplete>
+            <el-select
+                    @change="handleSelect"
+                    v-model="input3"
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="请输入关键词"
+                    :remote-method="remoteMethod"
+                    :loading="loading">
+                <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                        >
+                </el-option>
+            </el-select>
+<!--            <el-autocomplete  v-model="input3" placeholder="请输入内容" class="input-with-select" required @select="handleSelect" :fetch-suggestions="querySearchAsync"></el-autocomplete>-->
             <el-button type="primary" icon="el-icon-search" @click="toSearch();addRecord(input3)">搜索</el-button>
             <el-button type="primary" icon="el-icon-search" @click="toAdvanceSearch()">高级搜索</el-button>
 <!--            </el-form>-->
@@ -65,7 +81,9 @@
                 restaurants: [],
                 state: '',
                 timeout:  null,
-                recommend:null
+                recommend:null,
+                options:[],
+                loading: false
             }
         },
         mounted() {
@@ -79,6 +97,23 @@
             this.getRecommend()
         },
         methods:{
+            remoteMethod(query) {
+                if (query !== '') {
+                    this.loading = true;
+                    setTimeout(() => {
+                        this.loading = false;
+                        this.$axios.get('/getSuggest',{
+                            params: {
+                                keyword:query
+                            }
+                        }).then(comics_response =>{
+                            this.options =comics_response.data.data;
+                        })
+                    }, 200);
+                } else {
+                    this.options = [];
+                }
+            },
             loadAll() {
                 return [
                     {
@@ -153,7 +188,7 @@
                     return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
                 };
             },
-            handleSelect(item) {
+            handleSelect() {
                 this.$router.push({path: 'search', query: {keyword: this.input3}})
             },
             toSearch: function(){

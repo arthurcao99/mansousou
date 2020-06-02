@@ -9,8 +9,24 @@
         </div>
       </div>
       <div style="margin-top: 15px;" class="search-input">
-
-        <el-autocomplete v-model="keyword" placeholder="请输入内容" class="input-with-select" required :fetch-suggestions="querySearchAsync"  @select="handleSelect"/>
+          <el-select
+                  @change="search"
+                  v-model="keyword"
+                  filterable
+                  remote
+                  reserve-keyword
+                  placeholder="请输入关键词"
+                  :remote-method="remoteMethod"
+                  :loading="loading">
+              <el-option
+                      v-for="item in options"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+              >
+              </el-option>
+          </el-select>
+<!--        <el-autocomplete v-model="keyword" placeholder="请输入内容" class="input-with-select" required :fetch-suggestions="querySearchAsync"  @select="handleSelect"/>-->
 
         <el-button type="primary" icon="el-icon-search" @click="search();addRecord()">搜索</el-button>
 
@@ -99,7 +115,9 @@
         keyword: '',
         currentPage:1,
         pageSize:10,
-        items:null
+        items:null,
+          options:[],
+          loading: false
       }
     },
       watch:{
@@ -119,6 +137,23 @@
       init:function(keyword){
           this.keyword=keyword
       },
+        remoteMethod(query) {
+            if (query !== '') {
+                this.loading = true;
+                setTimeout(() => {
+                    this.loading = false;
+                    this.$axios.get('/getSuggest',{
+                        params: {
+                            keyword:query
+                        }
+                    }).then(comics_response =>{
+                        this.options =comics_response.data.data;
+                    })
+                }, 200);
+            } else {
+                this.options = [];
+            }
+        },
         add:function(item) {
             let params = new FormData()
             params.append('userId', localStorage.getItem('id'))
