@@ -9,7 +9,8 @@
         </div>
       </div>
       <div style="margin-top: 15px;" class="search-input">
-        <el-input v-model="keyword" placeholder="请输入内容" class="input-with-select" required />
+
+        <el-autocomplete v-model="keyword" placeholder="请输入内容" class="input-with-select" required :fetch-suggestions="querySearchAsync"  @select="handleSelect"/>
 
         <el-button type="primary" icon="el-icon-search" @click="search();addRecord()">搜索</el-button>
 
@@ -21,51 +22,58 @@
       </span></div>
       </div>
 
-            <div class="search-result">
-                <div v-for="item in items" class="item">
-                    <div class="left">
-                        <img :src="item.pics" alt="" width="200px" height="auto">
-                    </div>
-                    <div class="right">
-                        <div class="right-top">
-                            <p class="item-title">
-                                {{ item.title }}
-                            </p>
-                            <p class="item-line">
-                  <span>
-                    作者：
-                    {{ item.author }}
-                  </span>
-                            </p>
-                            <p class="item-line">
-                  <span>
-                    状态：
-                    {{ item.status }}
-                  </span>
-                                <span>
-                    更新：
-                    {{ item.status }}
-                  </span>
-                            </p>
-                            <p class="item-line">
-                  <span>
-                    类型：
-                    {{ item.genre }}
-                  </span>
-
-                            </p>
-                            <p class="item-line-content">
-                                {{ item.desc }}
-                            </p>
-                            <p class="button">
-                                <el-button type="primary" round icon="el-icon-star-off" size="medium" class="cancel-button" @click="toDetail(item.id);add(item)" >查看详情</el-button>
-                            </p>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-    <div class="page">
+      <div class="search-result">
+          <div v-for="item in items" class="item">
+              <div class="left">
+                  <img :src="item.pics" alt width="200px" height="auto" />
+              </div>
+              <div class="right">
+                  <div class="right-top">
+                      <p v-html="item.title" class="item-title">
+                          <!-- {{ item.title }} -->
+                      </p>
+                      <p class="item-line">
+                            <span style="text-aligin: center">
+                                作者：
+                                <!-- <span  v-html="item.author"></span> -->
+                                <font v-html="item.author"></font>
+                                <!-- {{ item.author }} -->
+                            </span>
+                      </p>
+                      <p class="item-line">
+                            <span>
+                                状态：
+                                {{ item.status }}
+                            </span>
+                          <span>
+                                更新：
+                                {{ item.status }}
+                            </span>
+                      </p>
+                      <p class="item-line">
+                            <span>
+                                类型：
+                                {{ item.genre }}
+                            </span>
+                      </p>
+                      <p v-html="item.desc" class="item-line-content">
+                          <!-- {{ item.desc }} -->
+                      </p>
+                      <p class="button">
+                          <el-button
+                                  type="primary"
+                                  round
+                                  icon="el-icon-star-off"
+                                  size="medium"
+                                  class="cancel-button"
+                                  @click="toDetail(item.id);add(item)"
+                          >查看详情</el-button>
+                      </p>
+                  </div>
+              </div>
+          </div>
+      </div>
+          <div class="page">
         <el-pagination
                 background
                 layout="prev, pager, next"
@@ -84,6 +92,7 @@
     name: 'search',
     data() {
       return {
+          restaurants: [],
           result:0,
           time:0,
         total:0,
@@ -148,6 +157,39 @@
           console.log('toDe')
           console.log(comicId)
             this.$router.push({name: 'comicDetail', params: {id: comicId}})
+        },
+        querySearchAsync(queryString, cb) {
+            // var restaurants = this.restaurants;
+            this.$axios.get('/getSuggest',{
+                params: {
+                    keyword:this.keyword
+                }
+            }).then(comics_response =>{
+                if (comics_response.data.data!=null){
+                    this.restaurants=comics_response.data.data;
+                    var restaurants = this.restaurants;
+                    var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
+                }
+                console.log(comics_response.data.data)
+
+
+
+                // clearTimeout(this.timeout);
+                // this.timeout = setTimeout(() => {
+                cb(results);
+                // }, 3);
+
+            })
+
+
+        },
+        createStateFilter(queryString) {
+            return (state) => {
+                return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+            };
+        },
+        handleSelect(item) {
+            this.search()
         }
     }
   }
@@ -178,7 +220,7 @@
     }
     .search-input{
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
     }
     .item-line span {
         margin-right: 25px;
