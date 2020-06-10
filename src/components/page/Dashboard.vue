@@ -1,38 +1,19 @@
 <template>
+    <transition
+            appear
+            appear-class="custom-appear-class"
+            appear-to-class="custom-appear-to-class" (2.1.8+)
+            appear-active-class="custom-appear-active-class"
+    >
     <div class="dashboard-container">
         <div class="icon">
             <img src="../../styles/放大镜.png" height="100" width="auto">
             <h1>漫搜搜</h1>
         </div>
         <div style="margin-top: 15px;" class="search-input">
-<!--            <el-form ref="form" :model="form" label-width="200px">-->
-<!--            <el-autocomplete-->
-<!--                    v-model="state"-->
-<!--                    :fetch-suggestions="querySearchAsync"-->
-<!--                    placeholder="请输入内容"-->
-<!--                    @select="handleSelect"-->
-<!--            ></el-autocomplete>-->
-            <el-select
-                    @change="handleSelect"
-                    v-model="input3"
-                    filterable
-                    remote
-                    reserve-keyword
-                    placeholder="请输入关键词"
-                    :remote-method="remoteMethod"
-                    :loading="loading">
-                <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                        >
-                </el-option>
-            </el-select>
-<!--            <el-autocomplete  v-model="input3" placeholder="请输入内容" class="input-with-select" required @select="handleSelect" :fetch-suggestions="querySearchAsync"></el-autocomplete>-->
+            <el-autocomplete  v-model="input3" placeholder="请输入内容" class="input-with-select" required @keyup.enter.native="toSearch();addRecord(input3)" @select="handleSelect" :fetch-suggestions="querySearchAsync"></el-autocomplete>
             <el-button type="primary" icon="el-icon-search" @click="toSearch();addRecord(input3)">搜索</el-button>
             <el-button type="primary" icon="el-icon-search" @click="toAdvanceSearch()">高级搜索</el-button>
-<!--            </el-form>-->
         </div>
 
         <div class="hot">
@@ -53,17 +34,17 @@
             <img src="../../styles/关注.png" height="20" width="auto" class="hot-icon">每日推荐
         </div>
         <div class="search-result-inside">
-
             <div v-for="item in recommend" class="item">
                 <div class="left">
-                    <router-link :to="{name: 'comicDetail', params: {id: item.comicId}}">
-                    <img :src="item.pics" alt="" width="150px" height="auto" class="img">
+                    <router-link :to="{name: 'comicDetail', params: {id: item.comicId}}" >
+                    <img :src="item.pics" alt="" width="150px" height="auto" class="img" >
                     </router-link>
                 </div>
 
             </div>
         </div>
     </div>
+    </transition>
 </template>
 
 <script>
@@ -81,9 +62,7 @@
                 restaurants: [],
                 state: '',
                 timeout:  null,
-                recommend:null,
-                options:[],
-                loading: false
+                recommend:null
             }
         },
         mounted() {
@@ -97,22 +76,14 @@
             this.getRecommend()
         },
         methods:{
-            remoteMethod(query) {
-                if (query !== '') {
-                    this.loading = true;
-                    setTimeout(() => {
-                        this.loading = false;
-                        this.$axios.get('/getSuggest',{
-                            params: {
-                                keyword:query
-                            }
-                        }).then(comics_response =>{
-                            this.options =comics_response.data.data;
-                        })
-                    }, 200);
-                } else {
-                    this.options = [];
-                }
+            add:function(item) {
+                let params = new FormData()
+                params.append('userId', localStorage.getItem('id'))
+                params.append('comicId', item.id)
+                params.append('title',item.title)
+                params.append('url',item.url)
+                params.append('pics',item.pics)
+                this.$axios.post('/recordRead',params)
             },
             loadAll() {
                 return [
@@ -168,7 +139,7 @@
                     if (comics_response.data.data!=null){
                         this.restaurants=comics_response.data.data;
                         var restaurants = this.restaurants;
-                        var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
+                        var results =  restaurants;
                     }
                     console.log(comics_response.data.data)
 
@@ -188,7 +159,7 @@
                     return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
                 };
             },
-            handleSelect() {
+            handleSelect(item) {
                 this.$router.push({path: 'search', query: {keyword: this.input3}})
             },
             toSearch: function(){
@@ -313,8 +284,11 @@
         justify-content: center;
         align-content: flex-start
     }
+    .search-input div{
+        width: 60%;
+    }
     .el-select .el-input {
-        width: 130px;
+        width: 60%;
     }
     .input-with-select .el-input-group__prepend {
         background-color: #FF7E2E;
@@ -461,8 +435,11 @@
 
     .input-with-select .el-input-group__prepend {
         background-color: #FF7E2E;
+        position: absolute;
+        width: 100%;
     }
     .block{
         text-align: center;
     }
+
 </style>

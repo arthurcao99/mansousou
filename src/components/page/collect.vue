@@ -6,10 +6,13 @@
                 <p class="item-title">
                     我的收藏
                 </p>
-                <div class="search-result-inside">
+                <div class="search-result-inside" >
                     <div v-for="item in items" class="item">
                         <div class="left">
-                            <img :src="item.pics" alt="" width="200px" height="auto" class="img">
+                            <div class="imgdiv">
+                                <img :src="item.pics" alt="" width="200px" height="auto" class="img">
+                            </div>
+
                             <span class="item-title">
                               <el-button type="primary" round icon="el-icon-star-off" size="mini" class="cancel-button" @click="toDetail(item.comicId)" >查看详情</el-button>
                                 <el-button type="danger" round icon="el-icon-delete" size="mini" class="cancel-button" @click="cancelCollect(item.collectId)" >取消收藏</el-button>
@@ -18,7 +21,7 @@
 
                     </div>
                 </div>
-                <div class="block">
+                <div class="block" v-if="total!=0">
                     <el-pagination
                             layout="prev, pager, next"
                             :current-page.sync="currentPage"
@@ -26,6 +29,9 @@
                             @current-change="add">
                     </el-pagination>
                 </div>
+                <transition name="bounce">
+
+                <div v-if="total==0"><img src="../../styles/null.png" height="50" width="50" style="margin-bottom: -10px"  />您似乎未收藏过漫画~</div></transition>
             </div>
         </div>
     </div>
@@ -90,7 +96,7 @@
                 let params = new FormData()
                 params.append('collectId', collectId)
                 this.$axios.post('/deleteCollectByCollectId',params).then(comics_response =>{
-                    this.add()
+                    location.reload()
                 })
             }
         }
@@ -202,7 +208,7 @@
         display: inline-block;
     }
     .search-result{
-        width: 100%;
+        width: 95%;
         margin: 20px 30px 30px 30px;
     }
     .search-result-inside{
@@ -235,5 +241,29 @@
     }
     .block{
         text-align: center;
+    }
+    .imgdiv{
+        height: 280px;
+        width: 200px;
+    }
+    .bounce-enter-active {
+        animation: bounce-in .5s;
+    }
+    .bounce-leave-active {
+        animation: bounce-in .5s reverse;
+    }
+    @keyframes bounce-in {
+        0% {
+            transform: scale(0);
+        }
+        30%{
+            transform: scale(0.3);
+        }
+        70% {
+            transform: scale(0.7);
+        }
+        100% {
+            transform: scale(1);
+        }
     }
 </style>

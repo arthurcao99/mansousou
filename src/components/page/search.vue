@@ -9,25 +9,25 @@
         </div>
       </div>
       <div style="margin-top: 15px;" class="search-input">
-          <el-select
-                  @change="search"
-                  v-model="keyword"
-                  filterable
-                  remote
-                  reserve-keyword
-                  placeholder="请输入关键词"
-                  :remote-method="remoteMethod"
-                  :loading="loading">
-              <el-option
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-              >
-              </el-option>
-          </el-select>
+<!--          <el-select-->
+<!--                  @change="search"-->
+<!--                  v-model="keyword"-->
+<!--                  filterable-->
+<!--                  remote-->
+<!--                  reserve-keyword-->
+<!--                  placeholder="请输入关键词"-->
+<!--                  :remote-method="remoteMethod"-->
+<!--                  :loading="loading">-->
+<!--              <el-option-->
+<!--                      v-for="item in options"-->
+<!--                      :key="item.value"-->
+<!--                      :label="item.label"-->
+<!--                      :value="item.value"-->
+<!--              >-->
+<!--              </el-option>-->
+<!--          </el-select>-->
 <!--        <el-autocomplete v-model="keyword" placeholder="请输入内容" class="input-with-select" required :fetch-suggestions="querySearchAsync"  @select="handleSelect"/>-->
-
+          <el-autocomplete  v-model="keyword" placeholder="请输入内容" class="input-with-select" required @keyup.enter.native="search();addRecord()" @select="handleSelect" :fetch-suggestions="querySearchAsync"></el-autocomplete>
         <el-button type="primary" icon="el-icon-search" @click="search();addRecord()">搜索</el-button>
 
       </div>
@@ -59,7 +59,10 @@
                       <p class="item-line">
                             <span>
                                 状态：
-                                {{ item.status }}
+                                <font color="#f08080">
+                                    {{ item.status }}
+                                </font>
+
                             </span>
                           <span>
                                 更新：
@@ -231,6 +234,9 @@
 </script>
 
 <style lang="scss" scoped>
+    .search-input div{
+        width: 60%;
+    }
     .chapter{
         margin: 10px;
     }

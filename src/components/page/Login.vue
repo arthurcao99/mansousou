@@ -32,6 +32,7 @@
                 <el-form-item prop="username" label="用户名">
                     <el-input v-model="reg.username"  ></el-input>
                 </el-form-item>
+
                 <el-form-item prop="password1" label="密码" >
                     <el-input v-model="reg.password1" type="password"></el-input>
                 </el-form-item>

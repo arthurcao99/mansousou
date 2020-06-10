@@ -9,7 +9,10 @@
                 <div class="search-result-inside">
                     <div v-for="item in items" class="item">
                         <div class="left">
-                            <img :src="item.pics" alt="" width="200px" height="auto" class="img">
+                            <div class="imgdiv" width="200px" height="350px">
+                                <img :src="item.pics" alt="" width="200px" height="auto" class="img">
+                            </div>
+
                             <span class="item-title">
                               <el-button type="primary" round icon="el-icon-star-off" size="mini" class="cancel-button" @click="toDetail(item.comicId)" >查看详情</el-button>
                                 <el-button type="primary" round icon="el-icon-refresh-right" size="mini" class="cancel-button" ><a :href="item.url" target="_blank">上次浏览</a></el-button>
@@ -18,7 +21,7 @@
 
                     </div>
                 </div>
-                <div class="block">
+                <div class="block" v-if="total!=0">
                     <el-pagination
                             layout="prev, pager, next"
                             :current-page.sync="currentPage"
@@ -26,6 +29,7 @@
                             @current-change="add">
                     </el-pagination>
                 </div>
+                <div v-else><img src="../../styles/null.png" height="50" width="50" style="margin-bottom: -10px"  />您似乎未浏览过漫画~</div>
             </div>
 
         </div>
@@ -197,9 +201,9 @@
     }
     .item-line span {
         margin-right: 25px;
-        display: inline-block;
+        display: flex;
         white-space: nowrap;
-        overflow: hidden;
+        justify-content: space-between;
         text-overflow: ellipsis;
     }
 
@@ -214,7 +218,7 @@
         display: inline-block;
     }
     .search-result{
-        width: 100%;
+        width: 95%;
         margin: 20px 30px 30px 30px;
     }
     .search-result-inside{
@@ -247,5 +251,9 @@
     }
     .block{
         text-align: center;
+    }
+    .imgdiv{
+        height: 280px;
+        width: 200px;
     }
 </style>
